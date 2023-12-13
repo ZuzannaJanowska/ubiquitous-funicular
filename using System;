@@ -1,0 +1,88 @@
+class Program
+{
+    static char[,] board = {
+        { ' ', ' ', ' ' },
+        { ' ', ' ', ' ' },
+        { ' ', ' ', ' ' }
+    };
+    static char currentPlayer = 'X';
+    static void Main()
+    {
+        do
+        {
+            PrintBoard();
+            MakeMove();
+        } while (!IsGameOver());
+        Console.ReadLine();
+    }
+    static void PrintBoard()
+    {
+        Console.Clear();
+        for (int row = 0; row < 3; row++)
+        {
+            for (int col = 0; col < 3; col++)
+            {
+                Console.Write(board[row, col] + " ");
+            }
+            Console.WriteLine();
+        }
+    }
+    static void MakeMove()
+    {
+        bool isValidMove = false;
+        do
+        {
+            Console.WriteLine($"Player {currentPlayer}, enter your move (row and column): ");
+            string[] input = Console.ReadLine().Split();
+
+            if (input.Length == 2 && int.TryParse(input[0], out int row) && int.TryParse(input[1], out int col)
+                && row >= 0 && row < 3 && col >= 0 && col < 3 && board[row, col] == ' ')
+            {
+                board[row, col] = currentPlayer;
+                currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+                isValidMove = true;
+            }
+            else
+            {
+                Console.WriteLine("Invalid move. Try again.");
+            }
+        } while (!isValidMove);
+    }
+    static bool IsGameOver()
+    {
+        if (CheckWinner())
+        {
+            PrintBoard();
+            Console.WriteLine($"Player {currentPlayer} wins!");
+            return true;
+        }
+        for (int row = 0; row < 3; row++)
+        {
+            for (int col = 0; col < 3; col++)
+            {
+                if (board[row, col] == ' ')
+                {
+                    return false;
+                }
+            }
+        }
+        PrintBoard();
+        Console.WriteLine("It's a tie!");
+        return true;
+    }
+    static bool CheckWinner()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            if (board[i, 0] == board[i, 1] && board[i, 1] == board[i, 2] && board[i, 0] != ' ')
+                return true;
+            if (board[0, i] == board[1, i] && board[1, i] == board[2, i] && board[0, i] != ' ')
+                return true;
+        }
+        if (board[0, 0] == board[1, 1] && board[1, 1] == board[2, 2] && board[0, 0] != ' ')
+            return true;
+        if (board[0, 2] == board[1, 1] && board[1, 1] == board[2, 0] && board[0, 2] != ' ')
+            return true;
+        return false;
+    }
+}
